@@ -15,7 +15,7 @@ export function LoginPage() {
   return (
     <section className="w-full bg-blue-100">
       <div className="max-w-7xl min-h-screen m-auto flex justify-center items-center">
-        <Card className="w-full max-w-md">
+        <Card className="w-full max-w-md m-4">
           <div className="flex flex-col gap-8 items-center">
             <div className="rounded-full border-none outline-none p-5 w-max bg-blue-500">
               <FaUserDoctor className="w-12 h-12 text-white" />
@@ -65,7 +65,7 @@ export function LoginPage() {
             </Button>
             <a
               className="font-medium text-blue-500 transition-all hover:text-blue-400"
-              href="#"
+              href="/register"
             >
               Não tem uma conta? Criar conta
             </a>
