@@ -18,6 +18,9 @@ import {
   SidebarMenuButton,
 } from "./sidebar";
 
+import { IoMenu } from "react-icons/io5";
+import { IoIosLogOut, IoMdSettings } from "react-icons/io";
+
 export function NavUser({
   user,
 }: {
@@ -30,13 +33,13 @@ export function NavUser({
   const { isMobile } = useSidebar();
 
   return (
-    <SidebarMenu>
+    <SidebarMenu className="hover:opacity-65">
       <SidebarMenuItem>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-black"
             >
               <Avatar className="h-8 w-8 rounded-lg grayscale">
                 <AvatarImage src={user.avatar} alt={user.name} />
@@ -48,11 +51,11 @@ export function NavUser({
                   {user.email}
                 </span>
               </div>
-              {/* <IconDotsVertical className="ml-auto size-4" /> */}
+              <IoMenu className="ml-auto size-4" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
+            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-md bg-white"
             side={isMobile ? "bottom" : "right"}
             align="end"
             sideOffset={4}
@@ -73,23 +76,15 @@ export function NavUser({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                {/* <IconUserCircle /> */}
-                Account
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                {/* <IconCreditCard /> */}
-                Billing
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                {/* <IconNotification /> */}
-                Notifications
+              <DropdownMenuItem className="cursor-pointer hover:opacity-75 hover:bg-gray-100 p-2 transition-all">
+                <IoMdSettings className="text-gray-700 size-5" />
+                Configurações
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              {/* <IconLogout /> */}
-              Log out
+            <DropdownMenuItem className="cursor-pointer hover:opacity-75 hover:bg-gray-100 p-2 transition-all">
+              <IoIosLogOut className="text-red-700 size-5" />
+              Sair
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

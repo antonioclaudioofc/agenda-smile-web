@@ -1,13 +1,8 @@
-import { AppSidebar } from "../../components/app-sidebar";
-import { SidebarInset, SidebarProvider } from "../../components/sidebar";
-
 export function HomePage() {
   return (
-    <SidebarProvider>
-      <AppSidebar variant="inset" />
-      <SidebarInset className="bg-zinc-100">
-        <div className="p-4">sadasd</div>
-      </SidebarInset>
-    </SidebarProvider>
+    <div className="p-4">
+      <h1 className="text-4xl font-semibold mb-2">Dashboard</h1>
+      <p className="text-gray-500">domingo, 19 de abril de 2026</p>
+    </div>
   );
 }

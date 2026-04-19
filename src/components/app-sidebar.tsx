@@ -14,37 +14,38 @@ import {
 import { NavMain } from "./nav-main";
 import { NavUser } from "./nav-user";
 
+import { MdOutlineDashboard } from "react-icons/md";
+import { LuNotebookText } from "react-icons/lu";
+import { GoPeople } from "react-icons/go";
+import { RiToothLine } from "react-icons/ri";
+import { Separator } from "./separator";
+
 const data = {
   user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
+    name: "Antonio",
+    email: "antonio@example.com",
+    avatar: "https://github.com/shadcn.png",
   },
   navMain: [
     {
-      title: "Dashboard",
-      url: "#",
-      // icon: IconDashboard,
+      title: "Início",
+      url: "/",
+      icon: MdOutlineDashboard,
     },
     {
-      title: "Lifecycle",
+      title: "Agenda",
       url: "#",
-      // // icon: IconListDetails,
+      icon: LuNotebookText,
     },
     {
-      title: "Analytics",
+      title: "Pacientes",
       url: "#",
-      // // icon: IconChartBar,
+      icon: GoPeople,
     },
     {
-      title: "Projects",
+      title: "Dentistas",
       url: "#",
-      // // icon: IconFolder,
-    },
-    {
-      title: "Team",
-      url: "#",
-      // // icon: IconUsers,
+      icon: RiToothLine,
     },
   ],
 };
@@ -57,13 +58,21 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarMenuItem>
             <SidebarMenuButton
               asChild
-              className="data-[slot=sidebar-menu-button]:p-1.5!"
+              className="data-[slot=sidebar-menu-button]:p-1.5! h-16 mb-4"
             >
-              <a href="#">
-                {/* <IconInnerShadowTop className="size-5!" /> */}
-                <span className="text-base font-semibold">Acme Inc.</span>
+              <a
+                href="/"
+                className="flex flex-col justify-start items-start transition-all hover:opacity-70"
+              >
+                <h2 className="text-2xl font-medium text-blue-500">
+                  Clínica Odonto
+                </h2>
+                <p className="text-gray-400 text-sm font-normal">
+                  Gerenciamento de Consultas
+                </p>
               </a>
             </SidebarMenuButton>
+            <Separator />
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
