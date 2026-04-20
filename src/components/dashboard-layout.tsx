@@ -6,8 +6,8 @@ export function DashboardLayout() {
   return (
     <SidebarProvider>
       <AppSidebar variant="inset" />
-      <SidebarInset className="bg-zinc-50">
-        <header className="flex h-16 shrink-0 items-center gap-2 border-b border-gray-200 px-4">
+      <SidebarInset className="bg-gray-50/80">
+        <header className="flex h-16 shrink-0 items-center gap-2 border-b border-gray-300 px-4">
           <SidebarTrigger className="-ml-1" />
         </header>
         <main className="flex-1">
