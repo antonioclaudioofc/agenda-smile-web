@@ -4,7 +4,7 @@ import { Slot } from "radix-ui";
 import { cn } from "../lib/utils";
 
 const buttonVariants = cva(
-  "group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-gray-200 bg-clip-padding text-sm font-medium whitespace-nowrap transition-all select-none focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:border-blue-500 p-3 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20",
+  "group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-gray-200 bg-clip-padding gap-2 text-sm font-medium whitespace-nowrap transition-all select-none focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:border-blue-500 p-3 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20",
   {
     variants: {
       variant: {

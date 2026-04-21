@@ -34,7 +34,7 @@ export function NavMain({
                   asChild
                   isActive={isActive}
                   className={cn(
-                    "px-2 py-8 gap-3 transition-all roudend-md",
+                    "px-4 py-8 gap-3 transition-all roudend-lg",
                     isActive ? "text-blue-600 bg-blue-50" : "hover:bg-gray-100",
                   )}
                   tooltip={item.title}

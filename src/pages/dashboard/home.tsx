@@ -17,7 +17,7 @@ export function HomePage() {
   return (
     <section className="p-4 md:p-6 lg:p-8 space-y-8">
       <div>
-        <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-1">
+        <h1 className="text-3xl md:text-4xl font-medium tracking-tight mb-1">
           Dashboard
         </h1>
         <p className="text-gray-500 capitalize">{currentDate}</p>
@@ -53,9 +53,7 @@ export function HomePage() {
           headerAction={<CiClock2 className="size-5 text-gray-500" />}
         >
           <CiCalendar className="size-16 text-gray-300" />
-          <p className="text-gray-400">
-            Nenhum atendimento agendado para hoje
-          </p>
+          <p className="text-gray-400">Nenhum atendimento agendado para hoje</p>
         </DashboardSection>
 
         <DashboardSection
