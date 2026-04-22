@@ -44,7 +44,7 @@ const data = {
     },
     {
       title: "Dentistas",
-      url: "#",
+      url: "/dentists",
       icon: RiToothLine,
     },
   ],

@@ -8,7 +8,6 @@ import {
   CardHeader,
   CardTitle,
 } from "../../components/card";
-import { Input } from "../../components/input";
 import {
   Table,
   TableHeader,
@@ -36,7 +35,7 @@ const patients = [
   },
 ];
 
-export function Patients() {
+export function PatientsPage() {
   return (
     <section className="p-4 md:p-6 lg:p-8 space-y-8">
       <div className="flex flex-row justify-between items-center flex-wrap max-sm:justify-center">
@@ -94,7 +93,7 @@ export function Patients() {
                 {patients.map((patient, index) => (
                   <TableRow
                     key={index}
-                    className="last:border-0 hover:bg-gray-50 transition-colors"
+                    className="last:border-0 hover:bg-gray-50 transition-colors text-base"
                   >
                     <TableCell className="py-4 px-4 font-bold text-gray-900">
                       {patient.nome}
