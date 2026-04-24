@@ -34,7 +34,7 @@ const data = {
     },
     {
       title: "Agenda",
-      url: "#",
+      url: "/books",
       icon: LuNotebookText,
     },
     {

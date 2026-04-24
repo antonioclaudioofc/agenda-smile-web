@@ -5,6 +5,7 @@ import { HomePage } from "../pages/dashboard/home";
 import { DashboardLayout } from "../components/dashboard-layout";
 import { PatientsPage } from "../pages/dashboard/patients";
 import { DentistsPage } from "../pages/dashboard/dentists";
+import { BooksPage } from "../pages/dashboard/books";
 
 export function AppRoutes() {
   return (
@@ -14,6 +15,7 @@ export function AppRoutes() {
           <Route path="/" element={<HomePage />} />
           <Route path="/patients" element={<PatientsPage />} />
           <Route path="/dentists" element={<DentistsPage />} />
+          <Route path="/books" element={<BooksPage />} />
         </Route>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
