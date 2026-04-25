@@ -1,10 +1,13 @@
 import { TooltipProvider } from "./components/tooltip";
+import { AuthProvider } from "./contexts/AuthContext";
 import { AppRoutes } from "./routes";
 
 export function App() {
   return (
-    <TooltipProvider>
-      <AppRoutes />
-    </TooltipProvider>
+    <AuthProvider>
+      <TooltipProvider>
+        <AppRoutes />
+      </TooltipProvider>
+    </AuthProvider>
   );
 }
