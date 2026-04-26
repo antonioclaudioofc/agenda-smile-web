@@ -4,7 +4,7 @@ import { decodeJwt } from "jose";
 const TOKEN = "access_token";
 const API = import.meta.env.VITE_API_BASE;
 
-export const http = axios.create({
+export const api = axios.create({
   baseURL: API,
 });
 
@@ -31,7 +31,7 @@ function getValidToken(): string | null {
   return token;
 }
 
-http.interceptors.request.use((config) => {
+api.interceptors.request.use((config) => {
   const token = getValidToken();
 
   if (token) {
@@ -41,7 +41,7 @@ http.interceptors.request.use((config) => {
   return config;
 });
 
-http.interceptors.response.use(
+api.interceptors.response.use(
   (response) => response,
   (error: AxiosError) => {
     if (error.response?.status === 401) {
