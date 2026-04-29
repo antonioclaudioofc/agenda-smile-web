@@ -20,17 +20,13 @@ import {
 
 import { IoMenu } from "react-icons/io5";
 import { IoIosLogOut, IoMdSettings } from "react-icons/io";
+import { useAuth } from "../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
-export function NavUser({
-  user,
-}: {
-  user: {
-    name: string;
-    email: string;
-    avatar: string;
-  };
-}) {
+export function NavUser() {
+  const { user, logout } = useAuth();
   const { isMobile } = useSidebar();
+  const navigate = useNavigate();
 
   return (
     <SidebarMenu className="hover:opacity-65">
@@ -42,13 +38,16 @@ export function NavUser({
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-black"
             >
               <Avatar className="h-8 w-8 rounded-lg grayscale">
-                <AvatarImage src={user.avatar} alt={user.name} />
+                <AvatarImage
+                  src="https://github.com/shadcn.png"
+                  alt={user?.first_name}
+                />
                 <AvatarFallback className="rounded-lg">CN</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{user.name}</span>
+                <span className="truncate font-medium">{user?.first_name}</span>
                 <span className="truncate text-xs text-muted-foreground">
-                  {user.email}
+                  {user?.email}
                 </span>
               </div>
               <IoMenu className="ml-auto size-4" />
@@ -63,13 +62,18 @@ export function NavUser({
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.avatar} alt={user.name} />
+                  <AvatarImage
+                    src="https://github.com/shadcn.png"
+                    alt={user?.first_name}
+                  />
                   <AvatarFallback className="rounded-lg">CN</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{user.name}</span>
+                  <span className="truncate font-medium">
+                    {user?.first_name}
+                  </span>
                   <span className="truncate text-xs text-muted-foreground">
-                    {user.email}
+                    {user?.email}
                   </span>
                 </div>
               </div>
@@ -82,7 +86,13 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="cursor-pointer hover:opacity-75 hover:bg-gray-100 p-2 transition-all">
+            <DropdownMenuItem
+              className="cursor-pointer hover:opacity-75 hover:bg-gray-100 p-2 transition-all"
+              onClick={() => {
+                logout();
+                navigate("/login");
+              }}
+            >
               <IoIosLogOut className="text-red-700 size-5" />
               Sair
             </DropdownMenuItem>

@@ -22,7 +22,6 @@ interface WeeklyCalendarProps {
 
 export function WeeklyCalendar({
   onDateChange,
-  onProfessionalChange,
 }: WeeklyCalendarProps) {
   const [currentDate, setCurrentDate] = React.useState(new Date());
   const [selectedDate, setSelectedDate] = React.useState(new Date());

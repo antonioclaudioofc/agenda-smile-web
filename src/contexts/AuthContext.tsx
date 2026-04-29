@@ -1,9 +1,12 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { api } from "../api/http";
 
 interface User {
   id: string;
   email: string;
   first_name: string;
+  username?: string;
 }
 
 interface AuthContextType {
@@ -17,22 +20,41 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const queryClient = useQueryClient();
   const [token, setToken] = useState<string | null>(
-    localStorage.getItem("access"),
+    localStorage.getItem("access_token"),
   );
 
-  const [user, setUser] = useState<User | null>(null);
+  const { data: userProfile } = useQuery({
+    queryKey: ["profile"],
+    queryFn: async () => {
+      const response = await api.get("/accounts/me/");
+      return response.data;
+    },
+    enabled: !!token,
+  });
 
-  function login(data: { token: string; user: User }) {
-    localStorage.setItem("access", data.token);
-    setToken(data.token);
-    setUser(data.user);
+  const user = userProfile || null;
+
+  function login(data: any) {
+    const extractedToken = data.token || data.access || data.access_token;
+    const extractedRefreshToken = data.refresh || data.refresh_token;
+
+    if (extractedToken) {
+      localStorage.setItem("access_token", extractedToken);
+      setToken(extractedToken);
+    }
+
+    if (extractedRefreshToken) {
+      localStorage.setItem("refresh_token", extractedRefreshToken);
+    }
   }
 
   function logout() {
-    localStorage.removeItem("access");
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
     setToken(null);
-    setUser(null);
+    queryClient.removeQueries({ queryKey: ["profile"] });
   }
 
   return (

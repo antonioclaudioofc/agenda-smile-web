@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Button } from "../../components/button";
 import {
   Card,
@@ -12,6 +11,7 @@ import { Input } from "../../components/input";
 import { FaUserDoctor } from "react-icons/fa6";
 import { useRegister } from "../../hooks/use-auth";
 import { useAuth } from "../../contexts/AuthContext";
+import { loginUser } from "../../api/auth";
 import {
   FieldSet,
   FieldGroup,
@@ -34,8 +34,16 @@ export function RegisterPage() {
 
   const onSubmit = (data: RegisterSchema) => {
     mutation.mutate(data, {
-      onSuccess: (response) => {
-        login(response);
+      onSuccess: async () => {
+        try {
+          const loginResponse = await loginUser({
+            username: data.username,
+            password: data.password,
+          });
+          login(loginResponse);
+        } catch (error) {
+          console.error("Auto-login failed after registration:", error);
+        }
       },
     });
   };

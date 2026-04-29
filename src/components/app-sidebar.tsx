@@ -21,11 +21,6 @@ import { RiToothLine } from "react-icons/ri";
 import { Separator } from "./separator";
 
 const data = {
-  user: {
-    name: "Antonio",
-    email: "antonio@example.com",
-    avatar: "https://github.com/shadcn.png",
-  },
   navMain: [
     {
       title: "Início",
@@ -80,7 +75,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavMain items={data.navMain} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />{" "}
+        <NavUser />{" "}
       </SidebarFooter>
     </Sidebar>
   );
