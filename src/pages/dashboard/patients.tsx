@@ -1,6 +1,11 @@
 import { IoMdAdd } from "react-icons/io";
 import { FaTrashAlt, FaEdit } from "react-icons/fa";
-import { HiOutlineSearch, HiSelector } from "react-icons/hi";
+import {
+  HiOutlineSearch,
+  HiSelector,
+  HiOutlineUser,
+  HiOutlinePhone,
+} from "react-icons/hi";
 import { Button } from "../../components/button";
 import {
   Card,
@@ -16,6 +21,22 @@ import {
   TableBody,
   TableCell,
 } from "../../components/table";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogClose,
+} from "../../components/dialog";
+import {
+  FieldGroup,
+  Field,
+  FieldLabel,
+  FieldError,
+} from "../../components/field";
+import { Input } from "../../components/input";
 
 const patients = [
   {
@@ -45,10 +66,15 @@ export function PatientsPage() {
           </h3>
           <p className="text-gray-500">Gerencie os pacientes da clínica</p>
         </header>
-        <Button>
-          <IoMdAdd className="size-5" />
-          Novo Paciente
-        </Button>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button>
+              <IoMdAdd className="size-5" />
+              Novo Paciente
+            </Button>
+          </DialogTrigger>
+          <FormAddPatient />
+        </Dialog>
       </div>
 
       <Card className="border-gray-200 shadow-sm rounded-xl bg-white overflow-hidden">
@@ -122,5 +148,81 @@ export function PatientsPage() {
         </CardContent>
       </Card>
     </section>
+  );
+}
+
+function FormAddPatient() {
+  return (
+    <DialogContent className="sm:max-w-md w-full p-0 overflow-hidden border-none shadow-2xl max-sm:h-[100dvh] max-sm:rounded-none max-sm:mx-0">
+      <DialogHeader className="p-6 pb-0 max-sm:pt-8">
+        <DialogTitle className="text-2xl font-bold text-gray-900">
+          Novo Paciente
+        </DialogTitle>
+        <DialogDescription className="text-base text-gray-500">
+          Cadastre as informações básicas do seu novo paciente.
+        </DialogDescription>
+      </DialogHeader>
+
+      <form className="space-y-6 flex flex-col h-full">
+        <div className="p-6 pt-2 space-y-5 flex-1">
+          <FieldGroup>
+            <Field>
+              <FieldLabel className="text-gray-700 font-semibold">
+                Nome
+              </FieldLabel>
+              <div className="relative group">
+                <HiOutlineUser className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors size-5" />
+                <Input
+                  placeholder="Ex: Ana Maria Silva"
+                  className="pl-10 h-12 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all rounded-xl"
+                />
+              </div>
+              <FieldError />
+            </Field>
+
+            <Field>
+              <FieldLabel className="text-gray-700 font-semibold">
+                Telefone
+              </FieldLabel>
+              <div className="relative group">
+                <HiOutlinePhone className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors size-5" />
+                <Input
+                  placeholder="(00) 00000-0000"
+                  className="pl-10 h-12 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all rounded-xl"
+                />
+              </div>
+              <FieldError />
+            </Field>
+
+            <Field>
+              <FieldLabel className="text-gray-700 font-semibold">
+                Observações
+              </FieldLabel>
+              <textarea
+                placeholder="Ex: Alergias, preferências ou histórico..."
+                className="flex min-h-[120px] w-full rounded-xl border border-gray-200 bg-transparent px-4 py-3 text-sm ring-offset-white placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-500/10 focus:border-blue-500 disabled:cursor-not-allowed disabled:opacity-50 transition-all"
+              />
+            </Field>
+          </FieldGroup>
+        </div>
+
+        <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 p-6">
+          <DialogClose asChild>
+            <Button
+              variant="outline"
+              className="w-full sm:w-auto h-11 px-8 font-semibold text-gray-600 hover:bg-gray-100"
+            >
+              Cancelar
+            </Button>
+          </DialogClose>
+          <Button
+            type="submit"
+            className="w-full sm:w-auto h-11 px-8 font-semibold shadow-lg shadow-blue-500/20"
+          >
+            Salvar Paciente
+          </Button>
+        </div>
+      </form>
+    </DialogContent>
   );
 }
