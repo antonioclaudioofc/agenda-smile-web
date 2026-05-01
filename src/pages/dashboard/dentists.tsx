@@ -1,6 +1,12 @@
 import { IoMdAdd } from "react-icons/io";
 import { FaTrashAlt, FaEdit } from "react-icons/fa";
-import { HiOutlineSearch, HiSelector } from "react-icons/hi";
+import {
+  HiOutlineSearch,
+  HiSelector,
+  HiOutlineUser,
+  HiOutlineAcademicCap,
+  HiOutlineClock,
+} from "react-icons/hi";
 import { Button } from "../../components/button";
 import {
   Card,
@@ -16,6 +22,22 @@ import {
   TableBody,
   TableCell,
 } from "../../components/table";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogClose,
+} from "../../components/dialog";
+import {
+  FieldGroup,
+  Field,
+  FieldLabel,
+  FieldError,
+} from "../../components/field";
+import { Input } from "../../components/input";
 
 const dentists = [
   {
@@ -40,10 +62,15 @@ export function DentistsPage() {
           </h3>
           <p className="text-gray-500">Gerencie os dentistas da clínica</p>
         </header>
-        <Button>
-          <IoMdAdd className="size-5" />
-          Novo Dentista
-        </Button>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button>
+              <IoMdAdd className="size-5" />
+              Novo Dentista
+            </Button>
+          </DialogTrigger>
+          <FormAddDentist />
+        </Dialog>
       </div>
 
       <Card className="border-gray-200 shadow-sm rounded-xl bg-white overflow-hidden">
@@ -118,5 +145,99 @@ export function DentistsPage() {
         </CardContent>
       </Card>
     </section>
+  );
+}
+
+function FormAddDentist() {
+  return (
+    <DialogContent className="sm:max-w-md w-full p-0 overflow-hidden border-none shadow-2xl max-sm:h-[100dvh] max-sm:rounded-none max-sm:mx-0">
+      <DialogHeader className="p-6 pb-0 max-sm:pt-8">
+        <DialogTitle className="text-2xl font-bold text-gray-900">
+          Novo Dentista
+        </DialogTitle>
+        <DialogDescription className="text-base text-gray-500">
+          Cadastre as informações básicas do seu novo dentista.
+        </DialogDescription>
+      </DialogHeader>
+
+      <form className="space-y-6 flex flex-col h-full">
+        <div className="p-6 pt-2 space-y-5 flex-1">
+          <FieldGroup>
+            <Field>
+              <FieldLabel className="text-gray-700 font-semibold">
+                Nome
+              </FieldLabel>
+              <div className="relative group">
+                <HiOutlineUser className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors size-5" />
+                <Input
+                  placeholder="Ex: Dr. Roberto Alves"
+                  className="pl-10 h-12 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all rounded-xl text-black placeholder:text-gray-500"
+                />
+              </div>
+              <FieldError />
+            </Field>
+            <Field>
+              <FieldLabel className="text-gray-700 font-semibold">
+                Especialidade
+              </FieldLabel>
+              <div className="relative group">
+                <HiOutlineAcademicCap className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors size-5" />
+                <Input
+                  placeholder="Ex: Implantodontia"
+                  className="pl-10 h-12 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all rounded-xl text-black placeholder:text-gray-500"
+                />
+              </div>
+              <FieldError />
+            </Field>
+
+            <div className="grid grid-cols-2 gap-4">
+              <Field>
+                <FieldLabel className="text-gray-700 font-semibold">
+                  Início do Atendimento
+                </FieldLabel>
+                <div className="relative group">
+                  <HiOutlineClock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors size-5" />
+                  <Input
+                    type="time"
+                    className="pl-10 h-12 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all rounded-xl text-black"
+                  />
+                </div>
+                <FieldError />
+              </Field>
+              <Field>
+                <FieldLabel className="text-gray-700 font-semibold">
+                  Fim do Atendimento
+                </FieldLabel>
+                <div className="relative group">
+                  <HiOutlineClock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors size-5" />
+                  <Input
+                    type="time"
+                    className="pl-10 h-12 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all rounded-xl text-black"
+                  />
+                </div>
+                <FieldError />
+              </Field>
+            </div>
+          </FieldGroup>
+        </div>
+
+        <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 p-6">
+          <DialogClose asChild>
+            <Button
+              variant="outline"
+              className="w-full sm:w-auto h-11 px-8 font-semibold text-gray-600 hover:bg-gray-100"
+            >
+              Cancelar
+            </Button>
+          </DialogClose>
+          <Button
+            type="submit"
+            className="w-full sm:w-auto h-11 px-8 font-semibold shadow-lg shadow-blue-500/20"
+          >
+            Salvar Dentista
+          </Button>
+        </div>
+      </form>
+    </DialogContent>
   );
 }
