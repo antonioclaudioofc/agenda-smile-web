@@ -1,5 +1,4 @@
 import axios, { AxiosError } from "axios";
-import { decodeJwt } from "jose";
 
 const TOKEN = "access_token";
 const API = import.meta.env.VITE_API_BASE;
@@ -8,27 +7,8 @@ export const api = axios.create({
   baseURL: API,
 });
 
-type JwtPayload = {
-  exp?: number;
-};
-
 function getValidToken(): string | null {
-  const token = localStorage.getItem(TOKEN);
-  if (!token) return null;
-
-  try {
-    const decoded = decodeJwt(token) as JwtPayload;
-
-    if (decoded.exp && decoded.exp * 1000 < Date.now()) {
-      localStorage.removeItem(TOKEN);
-      return null;
-    }
-  } catch {
-    localStorage.removeItem(TOKEN);
-    return null;
-  }
-
-  return token;
+  return localStorage.getItem(TOKEN);
 }
 
 api.interceptors.request.use((config) => {

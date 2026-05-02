@@ -37,26 +37,45 @@ import {
   FieldError,
 } from "../../components/field";
 import { Input } from "../../components/input";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  usePatient,
+  usePatients,
+  useUpdatePatient,
+  useDeletePatient,
+} from "../../hooks/use-patient";
+import { patientSchema } from "../../schemas/patient.schema";
+import type { PatientSchema } from "../../types/patient";
+import { maskCPF, maskPhone } from "../../utils/mask";
 
-const patients = [
-  {
-    nome: "Ana Costa",
-    telefone: "(11) 97654-3210",
-    observacoes: "-",
-  },
-  {
-    nome: "Carlos Pereira",
-    telefone: "(11) 96543-2109",
-    observacoes: "Preferência por atendimento pela manhã",
-  },
-  {
-    nome: "João da Silva",
-    telefone: "(11) 98765-4321",
-    observacoes: "Alergia a anestesia",
-  },
-];
+interface Patient extends PatientSchema {
+  id: string;
+}
 
 export function PatientsPage() {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
+  const { data: patients = [], isLoading } = usePatients();
+  const deleteMutation = useDeletePatient();
+
+  const handleEdit = (patient: Patient) => {
+    setSelectedPatient(patient);
+    setIsDialogOpen(true);
+  };
+
+  const handleDelete = (id: string) => {
+    if (confirm("Tem certeza que deseja excluir este paciente?")) {
+      deleteMutation.mutate(id);
+    }
+  };
+
+  const handleOpenChange = (open: boolean) => {
+    setIsDialogOpen(open);
+    if (!open) setSelectedPatient(null);
+  };
+
   return (
     <section className="p-4 md:p-6 lg:p-8 space-y-8">
       <div className="flex flex-row justify-between items-center flex-wrap max-sm:justify-center">
@@ -66,14 +85,17 @@ export function PatientsPage() {
           </h3>
           <p className="text-gray-500">Gerencie os pacientes da clínica</p>
         </header>
-        <Dialog>
+        <Dialog open={isDialogOpen} onOpenChange={handleOpenChange}>
           <DialogTrigger asChild>
-            <Button>
+            <Button onClick={() => setSelectedPatient(null)}>
               <IoMdAdd className="size-5" />
               Novo Paciente
             </Button>
           </DialogTrigger>
-          <FormAddPatient />
+          <PatientForm
+            patient={selectedPatient}
+            onSuccess={() => handleOpenChange(false)}
+          />
         </Dialog>
       </div>
 
@@ -116,32 +138,55 @@ export function PatientsPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {patients.map((patient, index) => (
-                  <TableRow
-                    key={index}
-                    className="last:border-0 hover:bg-gray-50 transition-colors text-base"
-                  >
-                    <TableCell className="py-4 px-4 font-bold text-gray-900">
-                      {patient.nome}
-                    </TableCell>
-                    <TableCell className="py-4 px-4 text-gray-700 font-medium">
-                      {patient.telefone}
-                    </TableCell>
-                    <TableCell className="py-4 px-4 text-gray-400">
-                      {patient.observacoes}
-                    </TableCell>
-                    <TableCell className="py-4 px-4 text-right">
-                      <div className="flex justify-end items-center gap-4">
-                        <button className="text-gray-900 hover:text-blue-600 transition-all">
-                          <FaEdit className="size-5" />
-                        </button>
-                        <button className="text-red-500 hover:text-red-700 transition-all">
-                          <FaTrashAlt className="size-5" />
-                        </button>
-                      </div>
+                {isLoading ? (
+                  <TableRow>
+                    <TableCell colSpan={4} className="h-24 text-center">
+                      Carregando pacientes...
                     </TableCell>
                   </TableRow>
-                ))}
+                ) : patients.length === 0 ? (
+                  <TableRow>
+                    <TableCell
+                      colSpan={4}
+                      className="h-24 text-center text-gray-500"
+                    >
+                      Nenhum paciente encontrado.
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  patients.map((patient: any, index: number) => (
+                    <TableRow
+                      key={patient.id || index}
+                      className="last:border-0 hover:bg-gray-50 transition-colors text-base"
+                    >
+                      <TableCell className="py-4 px-4 font-bold text-gray-900">
+                        {patient.name}
+                      </TableCell>
+                      <TableCell className="py-4 px-4 text-gray-700 font-medium">
+                        {patient.phone}
+                      </TableCell>
+                      <TableCell className="py-4 px-4 text-gray-400">
+                        {patient.notes || "-"}
+                      </TableCell>
+                      <TableCell className="py-4 px-4 text-right">
+                        <div className="flex justify-end items-center gap-4">
+                          <button
+                            onClick={() => handleEdit(patient)}
+                            className="text-gray-900 hover:text-blue-600 transition-all"
+                          >
+                            <FaEdit className="size-5" />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(patient.id)}
+                            className="text-red-500 hover:text-red-700 transition-all"
+                          >
+                            <FaTrashAlt className="size-5" />
+                          </button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
               </TableBody>
             </Table>
           </div>
@@ -151,20 +196,77 @@ export function PatientsPage() {
   );
 }
 
-function FormAddPatient() {
+function PatientForm({
+  patient,
+  onSuccess,
+}: {
+  patient: Patient | null;
+  onSuccess: () => void;
+}) {
+  const createMutation = usePatient();
+  const updateMutation = useUpdatePatient();
+
+  const isEditing = !!patient;
+
+  const form = useForm<PatientSchema>({
+    resolver: zodResolver(patientSchema),
+    mode: "onChange",
+    values: patient
+      ? {
+          name: patient.name,
+          cpf: maskCPF(patient.cpf),
+          phone: maskPhone(patient.phone),
+          notes: patient.notes || "",
+        }
+      : {
+          name: "",
+          cpf: "",
+          phone: "",
+          notes: "",
+        },
+  });
+
+  const onSubmit = (data: PatientSchema) => {
+    if (isEditing && patient) {
+      updateMutation.mutate(
+        { id: patient.id, data },
+        {
+          onSuccess: () => {
+            onSuccess();
+            form.reset();
+          },
+        },
+      );
+    } else {
+      createMutation.mutate(data, {
+        onSuccess: () => {
+          onSuccess();
+          form.reset();
+        },
+      });
+    }
+  };
+
+  const isPending = createMutation.isPending || updateMutation.isPending;
+
   return (
     <DialogContent className="sm:max-w-md w-full p-0 overflow-hidden border-none shadow-2xl max-sm:h-[100dvh] max-sm:rounded-none max-sm:mx-0">
       <DialogHeader className="p-6 pb-0 max-sm:pt-8">
         <DialogTitle className="text-2xl font-bold text-gray-900">
-          Novo Paciente
+          {isEditing ? "Editar Paciente" : "Novo Paciente"}
         </DialogTitle>
         <DialogDescription className="text-base text-gray-500">
-          Cadastre as informações básicas do seu novo paciente.
+          {isEditing
+            ? "Atualize as informações do paciente."
+            : "Cadastre as informações básicas do seu novo paciente."}
         </DialogDescription>
       </DialogHeader>
 
-      <form className="space-y-6 flex flex-col h-full">
-        <div className="p-6 pt-2 space-y-5 flex-1">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="flex flex-col h-full overflow-y-auto"
+      >
+        <div className="px-6 pt-2 flex-1">
           <FieldGroup>
             <Field>
               <FieldLabel className="text-gray-700 font-semibold">
@@ -175,9 +277,29 @@ function FormAddPatient() {
                 <Input
                   placeholder="Ex: Ana Maria Silva"
                   className="pl-10 h-12 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all rounded-xl"
+                  {...form.register("name")}
                 />
               </div>
-              <FieldError />
+              <FieldError>{form.formState.errors.name?.message}</FieldError>
+            </Field>
+
+            <Field>
+              <FieldLabel className="text-gray-700 font-semibold">
+                CPF
+              </FieldLabel>
+              <div className="relative group">
+                <HiOutlineUser className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors size-5" />
+                <Input
+                  placeholder="000.000.000-00"
+                  className="pl-10 h-12 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all rounded-xl"
+                  {...form.register("cpf")}
+                  onChange={(e) => {
+                    const maskedValue = maskCPF(e.target.value);
+                    form.setValue("cpf", maskedValue);
+                  }}
+                />
+              </div>
+              <FieldError>{form.formState.errors.cpf?.message}</FieldError>
             </Field>
 
             <Field>
@@ -189,9 +311,14 @@ function FormAddPatient() {
                 <Input
                   placeholder="(00) 00000-0000"
                   className="pl-10 h-12 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all rounded-xl"
+                  {...form.register("phone")}
+                  onChange={(e) => {
+                    const maskedValue = maskPhone(e.target.value);
+                    form.setValue("phone", maskedValue);
+                  }}
                 />
               </div>
-              <FieldError />
+              <FieldError>{form.formState.errors.phone?.message}</FieldError>
             </Field>
 
             <Field>
@@ -201,6 +328,7 @@ function FormAddPatient() {
               <textarea
                 placeholder="Ex: Alergias, preferências ou histórico..."
                 className="flex min-h-[120px] w-full rounded-xl border border-gray-200 bg-transparent px-4 py-3 text-sm ring-offset-white placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-500/10 focus:border-blue-500 disabled:cursor-not-allowed disabled:opacity-50 transition-all"
+                {...form.register("notes")}
               />
             </Field>
           </FieldGroup>
@@ -210,6 +338,7 @@ function FormAddPatient() {
           <DialogClose asChild>
             <Button
               variant="outline"
+              type="button"
               className="w-full sm:w-auto h-11 px-8 font-semibold text-gray-600 hover:bg-gray-100"
             >
               Cancelar
@@ -217,9 +346,10 @@ function FormAddPatient() {
           </DialogClose>
           <Button
             type="submit"
+            disabled={isPending}
             className="w-full sm:w-auto h-11 px-8 font-semibold shadow-lg shadow-blue-500/20"
           >
-            Salvar Paciente
+            {isPending ? "Salvando..." : isEditing ? "Atualizar" : "Salvar"}
           </Button>
         </div>
       </form>
