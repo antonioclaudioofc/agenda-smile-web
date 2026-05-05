@@ -220,21 +220,21 @@ function DentistForm({
           specialty: dentist.specialty || "",
           start_time: dentist.start_time,
           end_time: dentist.end_time,
-          user: user?.id,
+          user: user?.id ? String(user.id) : undefined,
         }
       : {
           name: "",
           specialty: "",
           start_time: "08:00" as any,
           end_time: "18:00" as any,
-          user: user?.id,
+          user: user?.id ? String(user.id) : undefined,
         },
   });
 
   const onSubmit = (data: DentistSchema) => {
     const payload = {
       ...data,
-      user: user?.id,
+      user: user?.id ? String(user.id) : undefined,
     };
 
     if (isEditing && dentist) {

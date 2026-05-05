@@ -34,8 +34,8 @@ export const useUpdateDentist = () => {
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: DentistSchema }) =>
       updateDentist(id, data),
-    onSuccess: (_, { id }) => {
-      queryClient.invalidateQueries({ queryKey: ["dentist", id] });
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["dentist"] });
     },
   });
 };
