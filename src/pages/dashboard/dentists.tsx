@@ -260,22 +260,22 @@ function DentistForm({
   const isPending = createMutation.isPending || updateMutation.isPending;
 
   return (
-    <DialogContent className="sm:max-w-md w-full p-0 overflow-hidden border-none shadow-2xl max-sm:h-[100dvh] max-sm:rounded-none max-sm:mx-0">
-      <DialogHeader className="p-6 pb-0 max-sm:pt-8">
-        <DialogTitle className="text-2xl font-bold text-gray-900">
-          {isEditing ? "Editar Dentista" : "Novo Dentista"}
-        </DialogTitle>
-        <DialogDescription className="text-base text-gray-500">
-          {isEditing
-            ? "Atualize as informações do dentista."
-            : "Cadastre as informações básicas do seu novo dentista."}
-        </DialogDescription>
-      </DialogHeader>
-
+    <DialogContent className="sm:max-w-md w-full p-0 border-none shadow-2xl max-sm:fixed max-sm:inset-0 max-sm:max-w-none max-sm:h-[100dvh] max-sm:rounded-none max-sm:translate-x-0 max-sm:translate-y-0 max-sm:left-0 max-sm:top-0">
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-6 flex flex-col h-full overflow-y-auto"
+        className="flex flex-col h-full overflow-y-auto"
       >
+        <DialogHeader className="p-6 pb-0 max-sm:pt-8">
+          <DialogTitle className="text-2xl font-bold text-gray-900">
+            {isEditing ? "Editar Dentista" : "Novo Dentista"}
+          </DialogTitle>
+          <DialogDescription className="text-base text-gray-500">
+            {isEditing
+              ? "Atualize as informações do dentista."
+              : "Cadastre as informações básicas do seu novo dentist."}
+          </DialogDescription>
+        </DialogHeader>
+
         <div className="p-6 pt-2 space-y-5 flex-1">
           <FieldGroup>
             <Field>

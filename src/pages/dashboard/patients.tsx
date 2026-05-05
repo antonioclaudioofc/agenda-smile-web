@@ -250,22 +250,22 @@ function PatientForm({
   const isPending = createMutation.isPending || updateMutation.isPending;
 
   return (
-    <DialogContent className="sm:max-w-md w-full p-0 overflow-hidden border-none shadow-2xl max-sm:h-[100dvh] max-sm:rounded-none max-sm:mx-0">
-      <DialogHeader className="p-6 pb-0 max-sm:pt-8">
-        <DialogTitle className="text-2xl font-bold text-gray-900">
-          {isEditing ? "Editar Paciente" : "Novo Paciente"}
-        </DialogTitle>
-        <DialogDescription className="text-base text-gray-500">
-          {isEditing
-            ? "Atualize as informações do paciente."
-            : "Cadastre as informações básicas do seu novo paciente."}
-        </DialogDescription>
-      </DialogHeader>
-
+    <DialogContent className="sm:max-w-full w-full p-0 border-none shadow-2xl  max-sm:inset-0 max-sm:max-w-none max-sm:h-[100dvh] max-sm:rounded-none max-sm:translate-x-0 max-sm:translate-y-0 max-sm:left-0 max-sm:top-0">
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className="flex flex-col h-full overflow-y-auto"
       >
+        <DialogHeader className="p-6 pb-0 max-sm:pt-8">
+          <DialogTitle className="text-2xl font-bold text-gray-900">
+            {isEditing ? "Editar Paciente" : "Novo Paciente"}
+          </DialogTitle>
+          <DialogDescription className="text-base text-gray-500">
+            {isEditing
+              ? "Atualize as informações do paciente."
+              : "Cadastre as informações básicas do seu novo paciente."}
+          </DialogDescription>
+        </DialogHeader>
+
         <div className="px-6 pt-2 flex-1">
           <FieldGroup>
             <Field>

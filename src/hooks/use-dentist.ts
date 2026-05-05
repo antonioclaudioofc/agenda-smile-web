@@ -6,11 +6,8 @@ import {
   updateDentist,
 } from "../api/dentist";
 import type { DentistSchema } from "../types/dentist";
-import { useAuth } from "../contexts/AuthContext";
 
 export const useDentist = () => {
-  const { user } = useAuth();
-
   return useQuery({
     queryKey: ["dentist"],
     queryFn: getDentists,
