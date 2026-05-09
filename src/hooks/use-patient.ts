@@ -38,7 +38,11 @@ export const useUpdatePatient = () => {
 
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: PatientSchema }) =>
-      updatePatient(id, data),
+      updatePatient(id, {
+        ...data,
+        cpf: data.cpf.replace(/\D/g, ""),
+        phone: data.phone.replace(/\D/g, ""),
+      }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["patients"] });
     },

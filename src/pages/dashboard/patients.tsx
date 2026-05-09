@@ -5,6 +5,7 @@ import {
   HiSelector,
   HiOutlineUser,
   HiOutlinePhone,
+  HiOutlineIdentification,
 } from "react-icons/hi";
 import { Button } from "../../components/button";
 import {
@@ -250,7 +251,7 @@ function PatientForm({
   const isPending = createMutation.isPending || updateMutation.isPending;
 
   return (
-    <DialogContent className="sm:max-w-full w-full p-0 border-none shadow-2xl  max-sm:inset-0 max-sm:max-w-none max-sm:h-[100dvh] max-sm:rounded-none max-sm:translate-x-0 max-sm:translate-y-0 max-sm:left-0 max-sm:top-0">
+    <DialogContent className="sm:max-w-lg w-full p-0 border-none shadow-2xl max-sm:inset-0 max-sm:max-w-none max-sm:h-[100dvh] max-sm:rounded-none max-sm:translate-x-0 max-sm:translate-y-0 max-sm:left-0 max-sm:top-0">
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className="flex flex-col h-full overflow-y-auto"
@@ -266,7 +267,7 @@ function PatientForm({
           </DialogDescription>
         </DialogHeader>
 
-        <div className="px-6 pt-2 flex-1">
+        <div className="px-6 pt-4 flex-1">
           <FieldGroup>
             <Field>
               <FieldLabel className="text-gray-700 font-semibold">
@@ -288,7 +289,7 @@ function PatientForm({
                 CPF
               </FieldLabel>
               <div className="relative group">
-                <HiOutlineUser className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors size-5" />
+                <HiOutlineIdentification className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors size-5" />
                 <Input
                   placeholder="000.000.000-00"
                   className="pl-10 h-12 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all rounded-xl"

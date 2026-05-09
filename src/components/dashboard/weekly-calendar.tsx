@@ -20,9 +20,7 @@ interface WeeklyCalendarProps {
   onProfessionalChange?: (professionalId: string) => void;
 }
 
-export function WeeklyCalendar({
-  onDateChange,
-}: WeeklyCalendarProps) {
+export function WeeklyCalendar({ onDateChange }: WeeklyCalendarProps) {
   const [currentDate, setCurrentDate] = React.useState(new Date());
   const [selectedDate, setSelectedDate] = React.useState(new Date());
   const [selectedProfessional, setSelectedProfessional] =
