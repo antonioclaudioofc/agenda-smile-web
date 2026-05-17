@@ -22,6 +22,7 @@ import {
   HiOutlineClock,
   HiOutlineCalendar,
   HiOutlineClipboardList,
+  HiChevronDown,
 } from "react-icons/hi";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -110,8 +111,9 @@ export function AppointmentForm({
               <FieldLabel>Paciente</FieldLabel>
               <div className="relative group">
                 <HiOutlineUser className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 size-5" />
+                <HiChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 size-5 pointer-events-none" />
                 <select
-                  className="w-full pl-10 h-12 rounded-xl border border-gray-200 bg-white text-black focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none appearance-none"
+                  className="w-full pl-10 pr-10 h-12 rounded-xl border border-gray-200 bg-white text-black focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none appearance-none cursor-pointer"
                   {...form.register("patient")}
                 >
                   <option value="">Selecione o paciente</option>
@@ -129,8 +131,9 @@ export function AppointmentForm({
               <FieldLabel>Dentista</FieldLabel>
               <div className="relative group">
                 <HiOutlineUser className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 size-5" />
+                <HiChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 size-5 pointer-events-none" />
                 <select
-                  className="w-full pl-10 h-12 rounded-xl border border-gray-200 bg-white text-black focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none appearance-none"
+                  className="w-full pl-10 pr-10 h-12 rounded-xl border border-gray-200 bg-white text-black focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none appearance-none cursor-pointer"
                   {...form.register("dentist")}
                 >
                   <option value="">Selecione o dentista</option>
@@ -192,8 +195,9 @@ export function AppointmentForm({
             <FieldLabel>Status</FieldLabel>
             <div className="relative group">
               <HiOutlineClipboardList className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 size-5" />
+              <HiChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 size-5 pointer-events-none" />
               <select
-                className="w-full pl-10 h-12 rounded-xl border border-gray-200 bg-white text-black focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none appearance-none"
+                className="w-full pl-10 pr-10 h-12 rounded-xl border border-gray-200 bg-white text-black focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none appearance-none cursor-pointer"
                 {...form.register("status")}
               >
                 <option value="scheduled">Agendado</option>
