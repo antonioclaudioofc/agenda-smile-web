@@ -26,10 +26,10 @@ export const usePatient = () => {
   });
 };
 
-export const usePatients = () => {
+export const usePatients = (search?: string) => {
   return useQuery({
-    queryKey: ["patients"],
-    queryFn: getPatients,
+    queryKey: ["patients", search],
+    queryFn: () => getPatients(search),
   });
 };
 

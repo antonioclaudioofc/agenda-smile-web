@@ -7,10 +7,10 @@ import {
 } from "../api/dentist";
 import type { DentistSchema } from "../types/dentist";
 
-export const useDentist = () => {
+export const useDentists = (search?: string) => {
   return useQuery({
-    queryKey: ["dentist"],
-    queryFn: getDentists,
+    queryKey: ["dentists", search],
+    queryFn: () => getDentists(search),
   });
 };
 
@@ -20,7 +20,7 @@ export const useCreateDentist = () => {
   return useMutation({
     mutationFn: (data: DentistSchema) => createDentist(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["dentist"] });
+      queryClient.invalidateQueries({ queryKey: ["dentists"] });
     },
   });
 };
@@ -32,7 +32,7 @@ export const useUpdateDentist = () => {
     mutationFn: ({ id, data }: { id: string; data: DentistSchema }) =>
       updateDentist(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["dentist"] });
+      queryClient.invalidateQueries({ queryKey: ["dentists"] });
     },
   });
 };
@@ -43,7 +43,7 @@ export const useDeleteDentist = () => {
   return useMutation({
     mutationFn: (id: string) => deleteDentist(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["dentist"] });
+      queryClient.invalidateQueries({ queryKey: ["dentists"] });
     },
   });
 };

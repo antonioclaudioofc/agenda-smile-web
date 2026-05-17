@@ -7,8 +7,10 @@ export const createPatient = async (data: PatientSchema) => {
   return response.data;
 };
 
-export const getPatients = async () => {
-  const response = await api.get("/patients/");
+export const getPatients = async (search?: string) => {
+  const response = await api.get("/patients/", {
+    params: { search },
+  });
 
   return response.data;
 };

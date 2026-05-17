@@ -38,12 +38,12 @@ import {
   FieldError,
 } from "../../components/field";
 import { Input } from "../../components/input";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAuth } from "../../contexts/AuthContext";
 import {
-  useDentist,
+  useDentists,
   useCreateDentist,
   useUpdateDentist,
   useDeleteDentist,
@@ -58,7 +58,18 @@ interface Dentist extends DentistSchema {
 export function DentistsPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedDentist, setSelectedDentist] = useState<Dentist | null>(null);
-  const { data: dentists = [], isLoading } = useDentist();
+  const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 500);
+
+    return () => clearTimeout(handler);
+  }, [search]);
+
+  const { data: dentists = [], isLoading } = useDentists(debouncedSearch);
   const deleteMutation = useDeleteDentist();
 
   const handleEdit = (dentist: Dentist) => {
@@ -112,6 +123,8 @@ export function DentistsPage() {
             <HiOutlineSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 size-5" />
             <input
               placeholder="Buscar por nome ou especialidade..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
               className="w-full pl-12 h-12 bg-gray-100 border-none text-black rounded-xl placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all text-base px-4"
             />
           </div>
@@ -168,7 +181,7 @@ export function DentistsPage() {
                         {dentist.specialty || "-"}
                       </TableCell>
                       <TableCell className="py-4 px-4 text-gray-400">
-                        {dentist.start_time} - {dentist.end_time}
+                        {dentist.start_time.substring(0, 5)} - {dentist.end_time.substring(0, 5)}
                       </TableCell>
                       <TableCell className="py-4 px-4 text-right">
                         <div className="flex justify-end items-center gap-4">
@@ -218,8 +231,8 @@ function DentistForm({
       ? {
           name: dentist.name,
           specialty: dentist.specialty || "",
-          start_time: dentist.start_time,
-          end_time: dentist.end_time,
+          start_time: dentist.start_time.substring(0, 5),
+          end_time: dentist.end_time.substring(0, 5),
           user: user?.id ? String(user.id) : undefined,
         }
       : {
@@ -272,7 +285,7 @@ function DentistForm({
           <DialogDescription className="text-base text-gray-500">
             {isEditing
               ? "Atualize as informações do dentista."
-              : "Cadastre as informações básicas do seu novo dentist."}
+              : "Cadastre as informações básicas do seu novo dentista."}
           </DialogDescription>
         </DialogHeader>
 

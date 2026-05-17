@@ -38,7 +38,7 @@ import {
   FieldError,
 } from "../../components/field";
 import { Input } from "../../components/input";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -58,7 +58,18 @@ interface Patient extends PatientSchema {
 export function PatientsPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
-  const { data: patients = [], isLoading } = usePatients();
+  const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 500);
+
+    return () => clearTimeout(handler);
+  }, [search]);
+
+  const { data: patients = [], isLoading } = usePatients(debouncedSearch);
   const deleteMutation = useDeletePatient();
 
   const handleEdit = (patient: Patient) => {
@@ -112,6 +123,8 @@ export function PatientsPage() {
             <HiOutlineSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 size-5" />
             <input
               placeholder="Buscar por nome ou telefone..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
               className="w-full pl-12 h-12 bg-gray-100 border-none text-black rounded-xl placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all text-base px-4"
             />
           </div>
@@ -277,7 +290,7 @@ function PatientForm({
                 <HiOutlineUser className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors size-5" />
                 <Input
                   placeholder="Ex: Ana Maria Silva"
-                  className="pl-10 h-12 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all rounded-xl"
+                  className="pl-10 h-12 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all rounded-xl text-black"
                   {...form.register("name")}
                 />
               </div>
@@ -292,7 +305,7 @@ function PatientForm({
                 <HiOutlineIdentification className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors size-5" />
                 <Input
                   placeholder="000.000.000-00"
-                  className="pl-10 h-12 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all rounded-xl"
+                  className="pl-10 h-12 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all rounded-xl text-black"
                   {...form.register("cpf")}
                   onChange={(e) => {
                     const maskedValue = maskCPF(e.target.value);
@@ -311,7 +324,7 @@ function PatientForm({
                 <HiOutlinePhone className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors size-5" />
                 <Input
                   placeholder="(00) 00000-0000"
-                  className="pl-10 h-12 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all rounded-xl"
+                  className="pl-10 h-12 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all rounded-xl text-black"
                   {...form.register("phone")}
                   onChange={(e) => {
                     const maskedValue = maskPhone(e.target.value);
@@ -328,7 +341,7 @@ function PatientForm({
               </FieldLabel>
               <textarea
                 placeholder="Ex: Alergias, preferências ou histórico..."
-                className="flex min-h-[120px] w-full rounded-xl border border-gray-200 bg-transparent px-4 py-3 text-sm ring-offset-white placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-500/10 focus:border-blue-500 disabled:cursor-not-allowed disabled:opacity-50 transition-all"
+                className="flex min-h-[120px] w-full rounded-xl border border-gray-200 bg-transparent px-4 py-3 text-sm ring-offset-white placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-500/10 focus:border-blue-500 disabled:cursor-not-allowed disabled:opacity-50 transition-all text-black"
                 {...form.register("notes")}
               />
             </Field>

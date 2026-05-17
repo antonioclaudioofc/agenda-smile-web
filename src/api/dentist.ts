@@ -7,8 +7,10 @@ export const createDentist = async (data: DentistSchema) => {
   return response.data;
 };
 
-export const getDentists = async () => {
-  const response = await api.get("/dentists/");
+export const getDentists = async (search?: string) => {
+  const response = await api.get("/dentists/", {
+    params: { search },
+  });
 
   return response.data;
 };

@@ -2,7 +2,9 @@ import type { LoginSchema, RegisterSchema } from "../types/user";
 import { api } from "./http";
 
 export const registerUser = async (data: RegisterSchema) => {
-  const response = await api.post("/accounts/register/", data);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { confirm_password, ...payload } = data;
+  const response = await api.post("/accounts/register/", payload);
 
   return response.data;
 };

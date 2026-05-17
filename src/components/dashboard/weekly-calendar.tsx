@@ -14,6 +14,9 @@ import {
   DropdownMenuTrigger,
 } from "../dropdown-menu";
 import { FaChevronDown } from "react-icons/fa6";
+import { useDentists } from "../../hooks/use-dentist";
+import { useAppointments } from "../../hooks/use-appointment";
+import type { Appointment } from "../../types/appointment";
 
 interface WeeklyCalendarProps {
   onDateChange?: (date: Date) => void;
@@ -23,8 +26,12 @@ interface WeeklyCalendarProps {
 export function WeeklyCalendar({ onDateChange }: WeeklyCalendarProps) {
   const [currentDate, setCurrentDate] = React.useState(new Date());
   const [selectedDate, setSelectedDate] = React.useState(new Date());
-  const [selectedProfessional, setSelectedProfessional] =
-    React.useState("Todos os Dentistas");
+  const [selectedProfessionalId, setSelectedProfessionalId] = React.useState<
+    string | null
+  >(null);
+
+  const { data: dentists = [] } = useDentists();
+  const { data: appointments = [] as Appointment[] } = useAppointments();
 
   const startOfWeek = React.useMemo(() => {
     const d = new Date(currentDate);
@@ -89,6 +96,25 @@ export function WeeklyCalendar({ onDateChange }: WeeklyCalendarProps) {
     "domingo",
   ];
 
+  const getAppointmentsForDate = (date: Date) => {
+    const dateString = date.toISOString().split("T")[0];
+    return appointments.filter((app: Appointment) => {
+      const matchesDate = app.date === dateString;
+      const matchesProfessional = selectedProfessionalId
+        ? String(app.dentist) === selectedProfessionalId
+        : true;
+      return matchesDate && matchesProfessional;
+    });
+  };
+
+  const selectedProfessionalName = React.useMemo(() => {
+    if (!selectedProfessionalId) return "Todos os Dentistas";
+    const dentist = dentists.find(
+      (d: any) => String(d.id) === selectedProfessionalId,
+    );
+    return dentist ? dentist.name : "Todos os Dentistas";
+  }, [selectedProfessionalId, dentists]);
+
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
@@ -129,26 +155,22 @@ export function WeeklyCalendar({ onDateChange }: WeeklyCalendarProps) {
               variant="outline"
               className="h-10 px-4 flex items-center gap-4 border-gray-200 bg-gray-50/30 hover:bg-gray-50 rounded-xl text-gray-700 font-medium transition-colors"
             >
-              {selectedProfessional}
+              {selectedProfessionalName}
               <FaChevronDown className="size-3 opacity-40" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuItem
-              onClick={() => setSelectedProfessional("Todos os Dentistas")}
-            >
+            <DropdownMenuItem onClick={() => setSelectedProfessionalId(null)}>
               Todos os Dentistas
             </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => setSelectedProfessional("Dr. Silva")}
-            >
-              Dr. Silva
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => setSelectedProfessional("Dra. Santos")}
-            >
-              Dra. Santos
-            </DropdownMenuItem>
+            {dentists.map((dentist: any) => (
+              <DropdownMenuItem
+                key={dentist.id}
+                onClick={() => setSelectedProfessionalId(String(dentist.id))}
+              >
+                {dentist.name}
+              </DropdownMenuItem>
+            ))}
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
@@ -158,6 +180,7 @@ export function WeeklyCalendar({ onDateChange }: WeeklyCalendarProps) {
           const isToday = new Date().toDateString() === date.toDateString();
           const isSelected =
             selectedDate.toDateString() === date.toDateString();
+          const dayAppointments = getAppointmentsForDate(date);
 
           return (
             <Card
@@ -167,7 +190,7 @@ export function WeeklyCalendar({ onDateChange }: WeeklyCalendarProps) {
                 onDateChange?.(date);
               }}
               className={cn(
-                "flex flex-col items-center p-6 min-h-[350px] transition-all duration-300 cursor-pointer border-gray-100 shadow-sm",
+                "flex flex-col items-center p-4 min-h-[350px] transition-all duration-300 cursor-pointer border-gray-100 shadow-sm",
                 "hover:border-blue-200 hover:shadow-md hover:-translate-y-1",
                 isSelected &&
                   "border-blue-500 ring-1 ring-blue-500 bg-blue-50/5",
@@ -176,7 +199,7 @@ export function WeeklyCalendar({ onDateChange }: WeeklyCalendarProps) {
             >
               <span
                 className={cn(
-                  "text-sm font-medium mb-1",
+                  "text-sm font-medium mb-1 capitalize",
                   isSelected ? "text-blue-600" : "text-gray-400",
                 )}
               >
@@ -190,13 +213,58 @@ export function WeeklyCalendar({ onDateChange }: WeeklyCalendarProps) {
               >
                 {date.getDate()}
               </span>
-              <span className="text-gray-400 text-xs mb-8">0 consultas</span>
+              <span
+                className={cn(
+                  "text-xs mb-4 font-medium",
+                  dayAppointments.length > 0
+                    ? "text-blue-600"
+                    : "text-gray-400",
+                )}
+              >
+                {dayAppointments.length}{" "}
+                {dayAppointments.length === 1 ? "consulta" : "consultas"}
+              </span>
 
-              <div className="mt-auto w-full flex flex-col items-center justify-center text-center py-4">
-                <div className="w-12 h-12 rounded-full bg-gray-50 flex items-center justify-center mb-2">
-                  <IoMdCalendar className="size-5 text-gray-200" />
-                </div>
-                <p className="text-gray-300 text-sm italic">Nenhuma consulta</p>
+              <div className="w-full space-y-2 overflow-y-auto max-h-[200px] pr-1 custom-scrollbar">
+                {dayAppointments.length > 0 ? (
+                  dayAppointments.map((app: Appointment) => (
+                    <div
+                      key={app.id}
+                      className="p-2 rounded-lg bg-white border border-gray-100 shadow-sm text-left hover:border-blue-100 transition-colors"
+                    >
+                      <p className="text-xs font-bold text-gray-900 truncate">
+                        {app.patient_name || "Paciente"}
+                      </p>
+                      <div className="flex justify-between items-center mt-1">
+                        <span className="text-[10px] text-gray-500">
+                          {app.start_time.substring(0, 5)}
+                        </span>
+                        <span
+                          className={cn(
+                            "text-[9px] px-1.5 py-0.5 rounded-full",
+                            app.status === "scheduled" &&
+                              "bg-blue-50 text-blue-600",
+                            app.status === "completed" &&
+                              "bg-green-50 text-green-600",
+                            app.status === "canceled" &&
+                              "bg-red-50 text-red-600",
+                          )}
+                        >
+                          {app.status === "scheduled"
+                            ? "Agendado"
+                            : app.status === "completed"
+                              ? "OK"
+                              : "Canc."}
+                        </span>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="mt-8 flex flex-col items-center justify-center text-center opacity-40">
+                    <IoMdCalendar className="size-6 text-gray-300 mb-2" />
+                    <p className="text-gray-400 text-[10px] italic">Vazio</p>
+                  </div>
+                )}
               </div>
             </Card>
           );
