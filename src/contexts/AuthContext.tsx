@@ -1,18 +1,22 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "../api/http";
+import type { Role } from "../types/user";
 
 interface User {
   id: string;
   email: string;
   first_name: string;
   username?: string;
+  role?: Role;
 }
 
 interface AuthContextType {
   token: string | null;
   user: User | null;
+  role: Role | null;
   isAuthenticated: boolean;
+  isLoadingProfile: boolean;
   login: (data: { token: string; user: User }) => void;
   logout: () => void;
 }
@@ -25,7 +29,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.getItem("access_token"),
   );
 
-  const { data: userProfile } = useQuery({
+  const { data: userProfile, isLoading: isLoadingProfile } = useQuery({
     queryKey: ["profile"],
     queryFn: async () => {
       const response = await api.get("/accounts/me/");
@@ -62,7 +66,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       value={{
         token,
         user,
+        role: user?.role ?? null,
         isAuthenticated: !!token,
+        isLoadingProfile: !!token && isLoadingProfile,
         login,
         logout,
       }}

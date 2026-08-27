@@ -23,10 +23,14 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { RegisterSchema } from "../../types/user";
 import { userRegisterSchema } from "../../schemas/user.schema";
+import { useNavigate } from "react-router-dom";
+import { AlertBanner } from "../../components/alert-banner";
+import { getErrorMessage, getFieldErrors } from "../../utils/get-error-message";
 
 export function RegisterPage() {
   const { login } = useAuth();
   const mutation = useRegister();
+  const navigate = useNavigate();
 
   const form = useForm<RegisterSchema>({
     resolver: zodResolver(userRegisterSchema),
@@ -41,8 +45,14 @@ export function RegisterPage() {
             password: data.password,
           });
           login(loginResponse);
-        } catch (error) {
-          console.error("Auto-login failed after registration:", error);
+        } catch {
+          navigate("/login");
+        }
+      },
+      onError: (error) => {
+        const fieldErrors = getFieldErrors(error);
+        for (const [field, message] of Object.entries(fieldErrors)) {
+          form.setError(field as keyof RegisterSchema, { message });
         }
       },
     });
@@ -67,10 +77,15 @@ export function RegisterPage() {
             <FieldSet>
               <CardContent>
                 <FieldGroup>
+                  {mutation.isError && (
+                    <AlertBanner>{getErrorMessage(mutation.error)}</AlertBanner>
+                  )}
+
                   <Field>
                     <FieldLabel>Nome</FieldLabel>
                     <Input
                       placeholder="Digite seu nome"
+                      disabled={mutation.isPending}
                       {...form.register("first_name")}
                     />
                     <FieldError>
@@ -82,6 +97,7 @@ export function RegisterPage() {
                     <FieldLabel>Usuário</FieldLabel>
                     <Input
                       placeholder="Digite seu nome de usuário"
+                      disabled={mutation.isPending}
                       {...form.register("username")}
                     />
                     <FieldError>
@@ -93,6 +109,7 @@ export function RegisterPage() {
                     <FieldLabel>Email</FieldLabel>
                     <Input
                       placeholder="Digite seu email"
+                      disabled={mutation.isPending}
                       {...form.register("email")}
                     />
                     <FieldError>
@@ -105,6 +122,7 @@ export function RegisterPage() {
                     <Input
                       placeholder="Digite sua senha"
                       type="password"
+                      disabled={mutation.isPending}
                       {...form.register("password")}
                     />
                     <FieldError>
@@ -117,6 +135,7 @@ export function RegisterPage() {
                     <Input
                       placeholder="Digite sua senha novamente"
                       type="password"
+                      disabled={mutation.isPending}
                       {...form.register("confirm_password")}
                     />
                     <FieldError>

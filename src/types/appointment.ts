@@ -7,6 +7,7 @@ export interface Appointment extends AppointmentSchema {
   id: string;
   patient_name?: string;
   dentist_name?: string;
+  dentist_specialty?: string;
   created_at: string;
   updated_at: string;
 }
